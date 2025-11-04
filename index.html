@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Developer CV Builder</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="main-header">
+            <h1>Web Developer CV Builder</h1>
+            <p>Create your professional CV with custom colors and styling</p>
+        </header>
+
+        <div class="builder-container">
+            <!-- Form Section -->
+            <section class="form-section">
+                <h2>Fill in Your Information</h2>
+                <div class="import-section">
+                    <h3>Quick Import</h3>
+                    <p>Paste your data in this format and click "Auto-Fill":</p>
+                    <p class="hint">Example: <code>Name: John Doe</code> or <code>Email: john@example.com</code></p>
+                    <div class="import-container">
+                        <textarea id="dummyDataInput" rows="8" placeholder="Paste your data here..."></textarea>
+                        <button type="button" id="autoFillBtn" class="btn-secondary">Auto-Fill Form</button>
+                    </div>
+                </div>
+                <form id="cvForm">
+                    <!-- Personal Information -->
+                    <fieldset>
+                        <legend>Personal Information</legend>
+                        <div class="form-group">
+                            <label for="profilePic">📸 Profile Picture</label>
+                            <input type="file" id="profilePic" name="profilePic" accept="image/*" style="display: none;">
+                            <div class="profile-pic-container" style="display: flex; align-items: center; gap: 20px;">
+                                <button type="button" class="btn-secondary" onclick="document.getElementById('profilePic').click()">
+                                    Choose Photo
+                                </button>
+                                <div id="profilePreview" style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(45deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px; overflow: hidden;">
+                                    👤
+                                </div>
+                                <select id="profileAnimation" name="profileAnimation" style="flex: 1;">
+                                    <option value="none">No Animation</option>
+                                    <option value="spin">Spinning</option>
+                                    <option value="pulse">Pulsing</option>
+                                    <option value="morph">Morphing Shape</option>
+                                    <option value="glitch">Glitch Effect</option>
+                                    <option value="rainbow">Rainbow Border</option>
+                                    <option value="float">Floating</option>
+                                    <option value="shake">Shake</option>
+                                    <option value="flip">3D Flip</option>
+                                    <option value="glow">Glowing</option>
+                                    <option value="heartbeat">Heartbeat</option>
+                                    <option value="swing">Swinging</option>
+                                    <option value="bounce">Bouncing</option>
+                                    <option value="jello">Jello Effect</option>
+                                    <option value="rubberBand">Rubber Band</option>
+                                    <option value="tada">Tada!</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="fullName">Full Name *</label>
+                            <input type="text" id="fullName" name="fullName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="title">Professional Title *</label>
+                            <input type="text" id="title" name="title" placeholder="e.g., Full Stack Developer" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="age">Age</label>
+                            <input type="number" id="age" name="age" min="16" max="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone</label>
+                            <input type="tel" id="phone" name="phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="location">Location</label>
+                            <input type="text" id="location" name="location" placeholder="City, Country">
+                        </div>
+                        <div class="form-group">
+                            <label for="summary">Professional Summary</label>
+                            <textarea id="summary" name="summary" rows="4" placeholder="Brief description about yourself and your expertise..."></textarea>
+                        </div>
+                    </fieldset>
+
+                    <!-- Links & Portfolio -->
+                    <fieldset>
+                        <legend>Links & Portfolio</legend>
+                        <div class="form-group">
+                            <label for="portfolio">Portfolio Website</label>
+                            <input type="url" id="portfolio" name="portfolio" placeholder="https://yourportfolio.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="github">GitHub</label>
+                            <input type="url" id="github" name="github" placeholder="https://github.com/username">
+                        </div>
+                        <div class="form-group">
+                            <label for="linkedin">LinkedIn</label>
+                            <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/username">
+                        </div>
+                    </fieldset>
+
+                    <!-- Work Experience -->
+                    <fieldset>
+                        <legend>Work Experience</legend>
+                        <div id="workExperience">
+                            <div class="work-entry">
+                                <div class="form-group">
+                                    <label>Company Name</label>
+                                    <input type="text" name="company[]" class="company-input">
+                                </div>
+                                <div class="form-group">
+                                    <label>Position</label>
+                                    <input type="text" name="position[]" class="position-input">
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group half">
+                                        <label>Start Date</label>
+                                        <input type="month" name="startDate[]" class="start-date-input">
+                                    </div>
+                                    <div class="form-group half">
+                                        <label>End Date</label>
+                                        <input type="month" name="endDate[]" class="end-date-input">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <textarea name="workDescription[]" rows="3" class="work-description-input" placeholder="Describe your responsibilities and achievements..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" id="addWork" class="btn-secondary">+ Add Another Job</button>
+                    </fieldset>
+
+                    <!-- Projects -->
+                    <fieldset>
+                        <legend>Projects</legend>
+                        <div id="projects">
+                            <div class="project-entry">
+                                <div class="form-group">
+                                    <label>Project Name</label>
+                                    <input type="text" name="projectName[]" class="project-name-input">
+                                </div>
+                                <div class="form-group">
+                                    <label>Project URL</label>
+                                    <input type="url" name="projectUrl[]" class="project-url-input" placeholder="https://project-link.com">
+                                </div>
+                                <div class="form-group">
+                                    <label>Technologies Used</label>
+                                    <input type="text" name="projectTech[]" class="project-tech-input" placeholder="e.g., React, Node.js, MongoDB">
+                                </div>
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <textarea name="projectDescription[]" rows="3" class="project-description-input" placeholder="Brief description of the project..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" id="addProject" class="btn-secondary">+ Add Another Project</button>
+                    </fieldset>
+
+                    <!-- Skills -->
+                    <fieldset>
+                        <legend>Technical Skills</legend>
+                        <div class="form-group">
+                            <label for="languages">Programming Languages</label>
+                            <input type="text" id="languages" name="languages" placeholder="e.g., JavaScript, Python, TypeScript">
+                        </div>
+                        <div class="form-group">
+                            <label for="frameworks">Frameworks & Libraries</label>
+                            <input type="text" id="frameworks" name="frameworks" placeholder="e.g., React, Vue, Express, Django">
+                        </div>
+                        <div class="form-group">
+                            <label for="tools">Tools & Technologies</label>
+                            <input type="text" id="tools" name="tools" placeholder="e.g., Git, Docker, AWS, MongoDB">
+                        </div>
+                        <div class="form-group">
+                            <label for="otherSkills">Other Skills</label>
+                            <input type="text" id="otherSkills" name="otherSkills" placeholder="e.g., UI/UX Design, Agile, REST APIs">
+                        </div>
+                    </fieldset>
+
+                    <!-- Education -->
+                    <fieldset>
+                        <legend>Education</legend>
+                        <div id="education">
+                            <div class="education-entry">
+                                <div class="form-group">
+                                    <label>School/University</label>
+                                    <input type="text" name="school[]" class="school-input">
+                                </div>
+                                <div class="form-group">
+                                    <label>Degree/Certificate</label>
+                                    <input type="text" name="degree[]" class="degree-input">
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group half">
+                                        <label>Start Year</label>
+                                        <input type="number" name="eduStartYear[]" class="edu-start-year" min="1950" max="2030">
+                                    </div>
+                                    <div class="form-group half">
+                                        <label>End Year</label>
+                                        <input type="number" name="eduEndYear[]" class="edu-end-year" min="1950" max="2030">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" id="addEducation" class="btn-secondary">+ Add Another Education</button>
+                    </fieldset>
+
+                    <!-- Customization Options -->
+                    <fieldset>
+                        <legend>CV Customization</legend>
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <label for="primaryColor">Primary Color</label>
+                                <input type="color" id="primaryColor" name="primaryColor" value="#2563eb">
+                            </div>
+                            <div class="form-group half">
+                                <label for="accentColor">Accent Color</label>
+                                <input type="color" id="accentColor" name="accentColor" value="#10b981">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="fontStyle">Font Style</label>
+                            <select id="fontStyle" name="fontStyle">
+                                <option value="modern">Modern (Sans-serif)</option>
+                                <option value="classic">Classic (Serif)</option>
+                                <option value="tech">Tech (Monospace)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="layout">Layout Style</label>
+                            <select id="layout" name="layout">
+                                <option value="clean">Clean & Minimal</option>
+                                <option value="modern">Modern with Sidebar</option>
+                                <option value="creative">Creative & Bold</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Advanced Options Toggle -->
+                        <div class="advanced-toggle">
+                            <button type="button" id="toggleAdvanced" class="btn-secondary">
+                                🎨 Show Advanced Options (HTML Only)
+                            </button>
+                        </div>
+                        
+                        <!-- Advanced Options Section -->
+                        <div id="advancedOptions" class="advanced-options" style="display: none;">
+                            <h3>🚀 Advanced Customization (HTML Export Only)</h3>
+                            <p class="hint">These effects only apply to HTML preview/export. PDF will remain clean.</p>
+                            
+                            <!-- Animations -->
+                            <div class="form-group">
+                                <label for="animationType">🎬 Animation Style</label>
+                                <select id="animationType" name="animationType">
+                                    <option value="none">No Animation</option>
+                                    <option value="fade">Fade In</option>
+                                    <option value="slide">Slide In</option>
+                                    <option value="bounce">Bounce In</option>
+                                    <option value="zoom">Zoom In</option>
+                                    <option value="flip">3D Flip</option>
+                                    <option value="rotate">Rotate In</option>
+                                    <option value="typewriter">Typewriter Effect</option>
+                                    <option value="glitch">Glitch Effect</option>
+                                    <option value="matrix3d">3D Matrix Transform</option>
+                                    <option value="cube">3D Cube Rotation</option>
+                                    <option value="helix">DNA Helix</option>
+                                    <option value="explosion">Explosion Assembly</option>
+                                    <option value="liquid">Liquid Morph</option>
+                                    <option value="dimensional">Dimensional Shift</option>
+                                    <option value="hologram">Holographic</option>
+                                    <option value="quantum">Quantum Fade</option>
+                                    <option value="neural">Neural Network</option>
+                                    <option value="vortex">Vortex Spiral</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Background Effects -->
+                            <div class="form-group">
+                                <label for="backgroundEffect">🌌 Background Effect</label>
+                                <select id="backgroundEffect" name="backgroundEffect">
+                                    <option value="none">None</option>
+                                    <option value="gradient-animated">Animated Gradient</option>
+                                    <option value="particles">Floating Particles</option>
+                                    <option value="waves">Wave Pattern</option>
+                                    <option value="geometric">Geometric Shapes</option>
+                                    <option value="stars">Starfield</option>
+                                    <option value="matrix">Matrix Rain</option>
+                                    <option value="aurora">Aurora Borealis</option>
+                                    <option value="mesh">Gradient Mesh</option>
+                                    <option value="cosmos">Cosmic Nebula</option>
+                                    <option value="circuit">Circuit Board</option>
+                                    <option value="dna">DNA Strands</option>
+                                    <option value="fireflies">Fireflies</option>
+                                    <option value="neurons">Neural Connections</option>
+                                    <option value="fractal">Fractal Patterns</option>
+                                    <option value="liquid-bg">Liquid Background</option>
+                                    <option value="portal">Portal Effect</option>
+                                    <option value="metaverse">Metaverse Grid</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Text Effects -->
+                            <div class="form-group">
+                                <label for="textEffect">✨ Text Effect</label>
+                                <select id="textEffect" name="textEffect">
+                                    <option value="none">None</option>
+                                    <option value="glow">Neon Glow</option>
+                                    <option value="shadow">3D Shadow</option>
+                                    <option value="gradient">Gradient Text</option>
+                                    <option value="outline">Outlined</option>
+                                    <option value="retro">Retro/Vintage</option>
+                                    <option value="glitch-text">Glitch Text</option>
+                                    <option value="rainbow">Rainbow Animation</option>
+                                    <option value="chrome">Chrome Reflection</option>
+                                    <option value="gold">Gold Foil</option>
+                                    <option value="ice">Frozen Ice</option>
+                                    <option value="fire">Fire Text</option>
+                                    <option value="smoke">Smoke Effect</option>
+                                    <option value="electric">Electric Surge</option>
+                                    <option value="neon-flicker">Neon Flicker</option>
+                                    <option value="laser">Laser Engraved</option>
+                                    <option value="holographic-text">Holographic</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Border Styles -->
+                            <div class="form-group">
+                                <label for="borderStyle">🔲 Border Style</label>
+                                <select id="borderStyle" name="borderStyle">
+                                    <option value="none">None</option>
+                                    <option value="animated">Animated Border</option>
+                                    <option value="glow">Glowing Border</option>
+                                    <option value="gradient-border">Gradient Border</option>
+                                    <option value="dashed-animated">Animated Dashes</option>
+                                    <option value="double">Double Line</option>
+                                    <option value="neumorphism">Neumorphism</option>
+                                    <option value="glassmorphism">Glassmorphism</option>
+                                    <option value="laser-border">Laser Scanner</option>
+                                    <option value="energy">Energy Field</option>
+                                    <option value="hexagon">Hexagon Frame</option>
+                                    <option value="plasma">Plasma Border</option>
+                                    <option value="forcefield">Force Field</option>
+                                    <option value="circuit-border">Circuit Trace</option>
+                                    <option value="diamond">Diamond Cut</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Special Effects -->
+                            <div class="form-row">
+                                <div class="form-group half">
+                                    <label for="glowIntensity">Glow Intensity</label>
+                                    <input type="range" id="glowIntensity" name="glowIntensity" min="0" max="100" value="50">
+                                    <span id="glowValue">50%</span>
+                                </div>
+                                <div class="form-group half">
+                                    <label for="blurEffect">Blur Background</label>
+                                    <input type="range" id="blurEffect" name="blurEffect" min="0" max="20" value="0">
+                                    <span id="blurValue">0px</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Interactive Features -->
+                            <div class="form-group">
+                                <label>🎮 Interactive Features</label>
+                                <div class="checkbox-group">
+                                    <label>
+                                        <input type="checkbox" id="parallax" name="parallax">
+                                        <span>Parallax Scrolling</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="hoverEffects" name="hoverEffects" checked>
+                                        <span>Hover Animations</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="soundEffects" name="soundEffects">
+                                        <span>Sound Effects</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="darkMode" name="darkMode">
+                                        <span>Dark Mode Toggle</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="confetti" name="confetti">
+                                        <span>Confetti on Load</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="magneticCursor" name="magneticCursor">
+                                        <span>Magnetic Cursor</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="scrollReveal" name="scrollReveal">
+                                        <span>Scroll Reveal</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="particleTrail" name="particleTrail">
+                                        <span>Particle Trail</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="floatingElements" name="floatingElements">
+                                        <span>Floating Elements</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="rippleEffect" name="rippleEffect">
+                                        <span>Ripple Click Effect</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="tiltEffect" name="tiltEffect">
+                                        <span>3D Tilt on Hover</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="morphingShapes" name="morphingShapes">
+                                        <span>Morphing Shapes</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Color Scheme -->
+                            <div class="form-group">
+                                <label for="colorScheme">Color Scheme Preset</label>
+                                <select id="colorScheme" name="colorScheme">
+                                    <option value="custom">Custom Colors</option>
+                                    <option value="cyberpunk">Cyberpunk</option>
+                                    <option value="vaporwave">Vaporwave</option>
+                                    <option value="sunset">Sunset</option>
+                                    <option value="ocean">Ocean Deep</option>
+                                    <option value="forest">Forest</option>
+                                    <option value="candy">Candy</option>
+                                    <option value="monochrome">Monochrome</option>
+                                    <option value="neon">Neon Lights</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Icon Style -->
+                            <div class="form-group">
+                                <label for="iconStyle">🎭 Icon Style</label>
+                                <select id="iconStyle" name="iconStyle">
+                                    <option value="emoji">Emoji</option>
+                                    <option value="minimal">Minimal Icons</option>
+                                    <option value="colored">Colored Icons</option>
+                                    <option value="animated">Animated Icons</option>
+                                    <option value="3d">3D Icons</option>
+                                    <option value="hand-drawn">Hand Drawn</option>
+                                    <option value="ascii">ASCII Art</option>
+                                    <option value="pixel">Pixel Art</option>
+                                </select>
+                            </div>
+                            
+                            <!-- ULTIMATE Features -->
+                            <div class="form-group">
+                                <label>🌟 ULTIMATE Features (Experimental)</label>
+                                <div class="checkbox-group">
+                                    <label>
+                                        <input type="checkbox" id="webgl" name="webgl">
+                                        <span>WebGL 3D Effects</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="voiceControl" name="voiceControl">
+                                        <span>Voice Commands</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="gameMode" name="gameMode">
+                                        <span>Interactive Game Mode</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="timeTheme" name="timeTheme">
+                                        <span>Time-Based Themes</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="weatherEffects" name="weatherEffects">
+                                        <span>Weather Effects</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="musicVisualizer" name="musicVisualizer">
+                                        <span>Music Visualizer</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="aiChat" name="aiChat">
+                                        <span>AI Chat Assistant</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="virtualReality" name="virtualReality">
+                                        <span>VR Ready</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="blockchain" name="blockchain">
+                                        <span>Blockchain Verified</span>
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" id="quantumAnimation" name="quantumAnimation">
+                                        <span>Quantum Animations</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Performance Mode -->
+                            <div class="form-group">
+                                <label for="performanceMode">⚡ Performance Mode</label>
+                                <select id="performanceMode" name="performanceMode">
+                                    <option value="balanced">Balanced</option>
+                                    <option value="performance">High Performance</option>
+                                    <option value="quality">Ultra Quality</option>
+                                    <option value="insane">INSANE MODE 🔥</option>
+                                </select>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div class="form-actions">
+                        <button type="button" id="generateCV" class="btn-primary">Generate CV</button>
+                        <button type="button" id="downloadPDF" class="btn-download" disabled>Download as PDF</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Preview Section -->
+            <section class="preview-section">
+                <h2>CV Preview</h2>
+                <div id="cvPreview" class="cv-preview">
+                    <div class="preview-placeholder">
+                        <p>Fill in the form and click "Generate CV" to see your CV preview here</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
