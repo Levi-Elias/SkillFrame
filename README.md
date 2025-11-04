@@ -104,3 +104,92 @@ This project is open source and available for personal and commercial use.
 ## Support
 
 For web developers looking to create a professional CV quickly and easily, this tool provides all the necessary features with a focus on customization and ease of use.
+
+
+
+
+
+
+
+
+// backend.js
+const http = require("http");
+const url = require("url");
+const fetch = require("node-fetch");
+require("dotenv").config();
+
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const REDIRECT_URI = "http://localhost:3000/callback";
+
+const server = http.createServer(async (req, res) => {
+  const parsed = url.parse(req.url, true);
+  if (parsed.pathname === "/callback" && parsed.query.code) {
+    const code = parsed.query.code;
+    // exchange code for token
+    const tokenResp = await fetch("https://www.linkedin.com/oauth/v2/accessToken", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        grant_type: "authorization_code",
+        code: code,
+        redirect_uri: REDIRECT_URI,
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET,
+      }),
+    });
+    const tokenData = await tokenResp.json();
+    const accessToken = tokenData.access_token;
+
+    // get profile info
+    const profileResp = await fetch(
+      "https://api.linkedin.com/v2/me?projection=(localizedFirstName,localizedLastName,profilePicture(displayImage~:playableStreams))",
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+    const profileData = await profileResp.json();
+
+    res.writeHead(200, { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" });
+    res.end(JSON.stringify(profileData));
+    return;
+  }
+
+  // Anything else 
+  res.writeHead(404);
+  res.end("Not found");
+});
+
+server.listen(3000, () => console.log("Backend listening on http://localhost:3000"));
+
+
+
+
+index aanpassing:
+
+<button id="linkedinImport">Importeer foto & profiel van LinkedIn</button>
+
+<script>
+  document.getElementById("linkedinImport").addEventListener("click", () => {
+    const clientId = "JOUW_CLIENT_ID";
+    const redirectUri = encodeURIComponent("http://localhost:3000/callback");
+    const scope = encodeURIComponent("r_liteprofile");
+    location.href = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
+  });
+
+  // na callback: frontend ophalen  
+  if (location.pathname === "/callback") {
+    fetch(`/callback${location.search}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        // verwerk: bijvoorbeeld
+        const name = `${data.localizedFirstName} ${data.localizedLastName}`;
+        // foto URL:
+        const imgUrl = data.profilePicture["displayImage~"].elements[0].identifiers[0].identifier;
+        document.getElementById("nameField").value = name;
+        document.getElementById("photoPreview").src = imgUrl;
+      })
+      .catch(err => console.error(err));
+  }
+</script>
