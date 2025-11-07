@@ -1,0 +1,430 @@
+/* 🎯 PROFESSIONAL CV LAYOUT STYLES */
+
+/* CV Container Styling */
+.cv-preview {
+    background: #ffffff;
+    min-height: 100vh;
+    padding: 20px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.cv-content {
+    max-width: 850px;
+    margin: 0 auto;
+    background: white;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    animation: fadeInScale 0.5s ease-out;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Professional Header Section */
+.cv-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 60px 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.cv-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: rotate 30s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Profile Picture Styling */
+.cv-profile-pic {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 25px;
+    border-radius: 50%;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+    background: white;
+    position: relative;
+    z-index: 1;
+}
+
+.cv-profile-pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Name and Title */
+.cv-header h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    letter-spacing: -0.5px;
+    position: relative;
+    z-index: 1;
+}
+
+.cv-header .title {
+    font-size: 1.3rem;
+    font-weight: 400;
+    opacity: 0.95;
+    margin-bottom: 25px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+}
+
+/* Contact Info Bar */
+.contact-info {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 25px;
+    margin-top: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.contact-info span {
+    display: flex;
+    align-items: center;
+    font-size: 0.95rem;
+    opacity: 0.95;
+}
+
+.contact-info span::before {
+    margin-right: 8px;
+    font-size: 1.1rem;
+}
+
+/* Links Section */
+.cv-links {
+    background: #f8f9fa;
+    padding: 25px 50px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.cv-links a {
+    color: #667eea;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.cv-links a:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Summary Section */
+.cv-summary {
+    padding: 40px 50px;
+    background: white;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.cv-summary p {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #495057;
+    margin: 0;
+}
+
+/* Section Styling */
+.cv-section {
+    padding: 40px 50px;
+    background: white;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.cv-section:last-child {
+    border-bottom: none;
+}
+
+.cv-section h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #212529;
+    margin: 0 0 30px 0;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #667eea;
+    display: inline-block;
+}
+
+/* Work Experience Items */
+.work-item,
+.project-item,
+.education-item {
+    margin-bottom: 35px;
+    padding: 25px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border-left: 4px solid #667eea;
+    transition: all 0.3s ease;
+}
+
+.work-item:hover,
+.project-item:hover,
+.education-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+}
+
+.work-header,
+.project-header,
+.education-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.work-header h3,
+.project-header h3,
+.education-header h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #212529;
+    margin: 0;
+}
+
+.company,
+.project-url {
+    font-size: 1.1rem;
+    color: #667eea;
+    font-weight: 500;
+    margin-top: 5px;
+    display: block;
+}
+
+.date-range {
+    font-size: 0.95rem;
+    color: #6c757d;
+    background: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.work-description,
+.project-description {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #495057;
+    margin: 15px 0 0 0;
+}
+
+/* Project Tech Stack */
+.tech-stack {
+    margin-top: 15px;
+}
+
+.tech-stack strong {
+    color: #495057;
+    font-weight: 600;
+}
+
+/* Skills Section Grid */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.skill-category h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #212529;
+    margin: 0 0 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.skill-category h4::before {
+    content: '▸';
+    color: #667eea;
+    font-size: 1.3rem;
+}
+
+/* Skill Tags */
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.skill-tag {
+    background: linear-gradient(135deg, #667eea15, #764ba215);
+    color: #667eea;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1px solid #667eea30;
+    transition: all 0.3s ease;
+}
+
+.skill-tag:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .cv-header {
+        padding: 40px 30px;
+    }
+    
+    .cv-header h1 {
+        font-size: 2rem;
+    }
+    
+    .cv-section {
+        padding: 30px 25px;
+    }
+    
+    .contact-info {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .work-header,
+    .project-header,
+    .education-header {
+        flex-direction: column;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .cv-content {
+        box-shadow: none;
+        border-radius: 0;
+    }
+    
+    .cv-header {
+        background: #667eea !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    .work-item,
+    .project-item,
+    .education-item {
+        break-inside: avoid;
+    }
+}
+
+/* Layout Variations */
+.layout-modern .cv-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.layout-classic .cv-header {
+    background: #2c3e50;
+}
+
+.layout-minimal .cv-header {
+    background: #f8f9fa;
+    color: #212529;
+}
+
+.layout-minimal .cv-header h1,
+.layout-minimal .cv-header .title,
+.layout-minimal .contact-info span {
+    color: #212529;
+}
+
+/* Font Variations */
+.font-modern {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.font-classic {
+    font-family: 'Georgia', 'Times New Roman', serif;
+}
+
+.font-tech {
+    font-family: 'Courier New', 'Consolas', monospace;
+}
+
+/* Animation Classes */
+.profile-animation-none { animation: none; }
+.profile-animation-spin { animation: spin 3s linear infinite; }
+.profile-animation-pulse { animation: pulse 2s ease-in-out infinite; }
+.profile-animation-morph { animation: morph 8s ease-in-out infinite; }
+.profile-animation-glitch { animation: glitch 2s steps(10) infinite; }
+.profile-animation-rainbow { animation: rainbow-border 3s linear infinite; }
+.profile-animation-float { animation: float 3s ease-in-out infinite; }
+.profile-animation-shake { animation: shake 0.5s ease-in-out infinite; }
+.profile-animation-flip { animation: flip 4s ease-in-out infinite; }
+.profile-animation-glow { animation: glow 2s ease-in-out infinite; }
+.profile-animation-heartbeat { animation: heartbeat 1.5s ease-in-out infinite; }
+.profile-animation-swing { animation: swing 2s ease-in-out infinite; }
+.profile-animation-bounce { animation: bounce 2s ease-in-out infinite; }
+.profile-animation-jello { animation: jello 2s ease-in-out infinite; }
+.profile-animation-rubberBand { animation: rubberBand 1s ease-in-out; }
+.profile-animation-tada { animation: tada 2s ease-in-out infinite; }
+
+/* Profile Picture Animations */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes morph {
+    0%, 100% { border-radius: 50%; }
+    50% { border-radius: 30%; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.5); }
+    50% { box-shadow: 0 0 40px rgba(102, 126, 234, 0.8); }
+}

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick CV Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .test-controls {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            max-width: 300px;
+        }
+        .test-controls button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            padding: 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .test-controls button:hover {
+            background: #45a049;
+        }
+        .status-msg {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-controls">
+        <h3>🧪 Quick Test Controls</h3>
+        <button onclick="testMinimalCV()">Test with Minimal Data</button>
+        <button onclick="testFullCV()">Test with Full Data</button>
+        <button onclick="checkFormElements()">Check Form Elements</button>
+        <button onclick="clearPreview()">Clear Preview</button>
+        <div id="testStatus"></div>
+    </div>
+
+    <div class="container">
+        <h1>CV Builder - Debug Test</h1>
+        
+        <!-- Minimal form with only required fields -->
+        <form id="cvForm" style="max-width: 600px; margin: 0 auto;">
+            <fieldset>
+                <legend>Test Form</legend>
+                <div class="form-group">
+                    <label for="fullName">Full Name *</label>
+                    <input type="text" id="fullName" value="John Doe">
+                </div>
+                <div class="form-group">
+                    <label for="title">Professional Title *</label>
+                    <input type="text" id="title" value="Software Developer">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" value="john@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" value="555-0123">
+                </div>
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" value="New York, NY">
+                </div>
+                <div class="form-group">
+                    <label for="summary">Summary</label>
+                    <textarea id="summary">Experienced developer with passion for creating innovative solutions.</textarea>
+                </div>
+            </fieldset>
+            
+            <div style="margin-top: 20px;">
+                <button type="button" id="generateCV" class="btn-primary">Generate CV</button>
+                <button type="button" id="downloadPDF" class="btn-download" disabled>Download PDF</button>
+            </div>
+        </form>
+
+        <div id="cvPreview" style="margin-top: 40px; min-height: 400px; border: 1px solid #ddd; padding: 20px;">
+            <p style="text-align: center; color: #999;">CV Preview will appear here...</p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="script.js"></script>
+    
+    <script>
+        function showTestStatus(message, type = 'info') {
+            const status = document.getElementById('testStatus');
+            if (status) {
+                status.className = `status-msg ${type}`;
+                status.textContent = message;
+                setTimeout(() => {
+                    status.textContent = '';
+                }, 5000);
+            }
+        }
+
+        function testMinimalCV() {
+            console.log('🧪 Testing minimal CV generation...');
+            
+            // Set minimal data
+            document.getElementById('fullName').value = 'Test User';
+            document.getElementById('title').value = 'Test Developer';
+            
+            // Try to generate
+            const generateBtn = document.getElementById('generateCV');
+            if (generateBtn) {
+                generateBtn.click();
+                showTestStatus('Minimal CV test initiated - check console', 'info');
+            } else {
+                showTestStatus('Generate button not found!', 'error');
+            }
+        }
+
+        function testFullCV() {
+            console.log('🧪 Testing full CV generation...');
+            
+            // Set full data
+            document.getElementById('fullName').value = 'Jane Smith';
+            document.getElementById('title').value = 'Senior Full Stack Developer';
+            document.getElementById('email').value = 'jane@example.com';
+            document.getElementById('phone').value = '555-9876';
+            document.getElementById('location').value = 'San Francisco, CA';
+            document.getElementById('summary').value = 'Experienced full stack developer with 10+ years of experience in building scalable web applications. Expert in React, Node.js, and cloud technologies.';
+            
+            // Generate
+            const generateBtn = document.getElementById('generateCV');
+            if (generateBtn) {
+                generateBtn.click();
+                showTestStatus('Full CV test initiated - check console', 'info');
+            }
+        }
+
+        function checkFormElements() {
+            console.log('🔍 Checking form elements...');
+            const elements = [
+                'fullName', 'title', 'email', 'phone', 'location', 'summary',
+                'linkedin', 'github', 'website', 'portfolio',
+                'languages', 'frameworks', 'tools', 'otherSkills',
+                'primaryColor', 'accentColor', 'fontStyle', 'layout',
+                'cvForm', 'generateCV', 'downloadPDF', 'cvPreview'
+            ];
+            
+            let found = 0;
+            let missing = 0;
+            
+            elements.forEach(id => {
+                const elem = document.getElementById(id);
+                if (elem) {
+                    console.log(`✅ #${id} found`);
+                    found++;
+                } else {
+                    console.log(`❌ #${id} NOT found`);
+                    missing++;
+                }
+            });
+            
+            showTestStatus(`Found: ${found}, Missing: ${missing} elements`, found > missing ? 'success' : 'error');
+        }
+
+        function clearPreview() {
+            const preview = document.getElementById('cvPreview');
+            if (preview) {
+                preview.innerHTML = '<p style="text-align: center; color: #999;">CV Preview will appear here...</p>';
+                showTestStatus('Preview cleared', 'success');
+            }
+        }
+
+        // Check on load
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Debug test page loaded');
+            setTimeout(() => {
+                checkFormElements();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

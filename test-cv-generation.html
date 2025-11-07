@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test CV Generation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-section {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+        .btn-secondary {
+            background: #2196F3;
+            color: white;
+        }
+        .btn-warning {
+            background: #ff9800;
+            color: white;
+        }
+        .console-output {
+            background: #000;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            height: 200px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 CV Generation Test Suite</h1>
+    
+    <div class="test-section">
+        <h2>📋 Test Controls</h2>
+        <button class="btn-primary" onclick="testBasicGeneration()">Test Basic CV Generation</button>
+        <button class="btn-secondary" onclick="testWithMinimalData()">Test with Minimal Data</button>
+        <button class="btn-secondary" onclick="testWithFullData()">Test with Full Data</button>
+        <button class="btn-warning" onclick="checkFunctions()">Check Available Functions</button>
+        <button class="btn-warning" onclick="clearConsole()">Clear Console</button>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Test Results</h2>
+        <div id="testStatus"></div>
+        <div class="console-output" id="consoleOutput"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🖼️ Preview Area</h2>
+        <div id="cvPreview" style="border: 1px solid #ddd; padding: 20px; min-height: 400px; background: white;">
+            <p style="text-align: center; color: #999;">CV preview will appear here...</p>
+        </div>
+    </div>
+
+    <script>
+        // Console output helper
+        function log(message, type = 'info') {
+            const output = document.getElementById('consoleOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            const icon = type === 'error' ? '❌' : type === 'success' ? '✅' : '📝';
+            output.innerHTML += `[${timestamp}] ${icon} ${message}<br>`;
+            output.scrollTop = output.scrollHeight;
+            console.log(message);
+        }
+
+        function showStatus(message, type = 'success') {
+            const status = document.getElementById('testStatus');
+            status.className = type;
+            status.textContent = message;
+        }
+
+        function clearConsole() {
+            document.getElementById('consoleOutput').innerHTML = '';
+            log('Console cleared', 'info');
+        }
+
+        // Check if functions are available
+        function checkFunctions() {
+            log('Checking available functions...', 'info');
+            
+            const functions = [
+                'generateCVPreview',
+                'updateLivePreview',
+                'collectFormData',
+                'showMessage',
+                'fillWithTestData'
+            ];
+            
+            functions.forEach(func => {
+                if (typeof window[func] === 'function') {
+                    log(`✅ ${func} is available`, 'success');
+                } else {
+                    log(`❌ ${func} is NOT available`, 'error');
+                }
+            });
+            
+            // Check for form elements
+            const elements = [
+                'cvForm',
+                'generateCV',
+                'downloadPDF',
+                'cvPreview',
+                'fullName',
+                'title'
+            ];
+            
+            elements.forEach(id => {
+                const elem = document.getElementById(id);
+                if (elem) {
+                    log(`✅ Element #${id} found`, 'success');
+                } else {
+                    log(`❌ Element #${id} NOT found`, 'error');
+                }
+            });
+        }
+
+        // Test basic CV generation
+        function testBasicGeneration() {
+            log('Starting basic CV generation test...', 'info');
+            
+            try {
+                // Create minimal test data
+                const testData = {
+                    personal: {
+                        fullName: 'Test User',
+                        title: 'Software Developer',
+                        email: 'test@example.com',
+                        phone: '123-456-7890',
+                        location: 'New York, NY',
+                        summary: 'This is a test CV generation.'
+                    },
+                    workExperience: [],
+                    projects: [],
+                    skills: {
+                        languages: 'JavaScript, Python',
+                        frameworks: 'React, Node.js',
+                        tools: 'Git, Docker',
+                        otherSkills: 'Agile, Team Leadership'
+                    },
+                    education: [],
+                    customization: {
+                        layout: 'modern',
+                        primaryColor: '#2c3e50',
+                        accentColor: '#3498db',
+                        fontStyle: 'modern',
+                        animationType: 'fade',
+                        backgroundEffect: 'gradient',
+                        glowIntensity: 50,
+                        blurAmount: 0,
+                        profileAnimation: 'none'
+                    }
+                };
+                
+                // Try to generate CV
+                if (typeof window.generateCVPreview === 'function') {
+                    log('Calling generateCVPreview...', 'info');
+                    window.generateCVPreview(testData);
+                    showStatus('CV generated successfully!', 'success');
+                    log('CV generation completed!', 'success');
+                } else {
+                    throw new Error('generateCVPreview function not found');
+                }
+            } catch (error) {
+                log(`Error: ${error.message}`, 'error');
+                showStatus(`Test failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Test with minimal data
+        function testWithMinimalData() {
+            log('Testing with minimal data (name and title only)...', 'info');
+            
+            const minimalData = {
+                personal: {
+                    fullName: 'John Doe',
+                    title: 'Developer'
+                },
+                workExperience: [],
+                projects: [],
+                skills: {},
+                education: [],
+                customization: {
+                    layout: 'modern',
+                    primaryColor: '#333',
+                    accentColor: '#666'
+                }
+            };
+            
+            try {
+                if (typeof window.generateCVPreview === 'function') {
+                    window.generateCVPreview(minimalData);
+                    showStatus('Minimal CV generated!', 'success');
+                    log('Minimal data test passed!', 'success');
+                } else {
+                    throw new Error('generateCVPreview not available');
+                }
+            } catch (error) {
+                log(`Minimal data test failed: ${error.message}`, 'error');
+                showStatus(`Test failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Test with full data
+        function testWithFullData() {
+            log('Testing with full comprehensive data...', 'info');
+            
+            const fullData = {
+                personal: {
+                    fullName: 'Jane Smith',
+                    title: 'Senior Full Stack Developer',
+                    email: 'jane.smith@example.com',
+                    phone: '555-0123',
+                    location: 'San Francisco, CA',
+                    linkedin: 'linkedin.com/in/janesmith',
+                    github: 'github.com/janesmith',
+                    website: 'janesmith.dev',
+                    summary: 'Experienced developer with 10+ years in web technologies.'
+                },
+                workExperience: [
+                    {
+                        company: 'Tech Corp',
+                        position: 'Senior Developer',
+                        startDate: '2020-01',
+                        endDate: '',
+                        description: 'Led development of key features.'
+                    }
+                ],
+                projects: [
+                    {
+                        name: 'Awesome Project',
+                        url: 'https://github.com/awesome',
+                        technologies: 'React, Node.js',
+                        description: 'Built an awesome application.'
+                    }
+                ],
+                skills: {
+                    languages: 'JavaScript, TypeScript, Python, Java',
+                    frameworks: 'React, Angular, Vue, Express',
+                    tools: 'Git, Docker, Kubernetes, AWS',
+                    otherSkills: 'Leadership, Agile, Mentoring'
+                },
+                education: [
+                    {
+                        school: 'MIT',
+                        degree: 'BS Computer Science',
+                        startYear: '2010',
+                        endYear: '2014'
+                    }
+                ],
+                customization: {
+                    layout: 'modern',
+                    primaryColor: '#1a237e',
+                    accentColor: '#ff6f00',
+                    fontStyle: 'modern',
+                    animationType: 'slide',
+                    backgroundEffect: 'particles',
+                    glowIntensity: 75,
+                    blurAmount: 5,
+                    profileAnimation: 'pulse'
+                }
+            };
+            
+            try {
+                if (typeof window.generateCVPreview === 'function') {
+                    window.generateCVPreview(fullData);
+                    showStatus('Full CV with all features generated!', 'success');
+                    log('Full data test passed!', 'success');
+                } else {
+                    throw new Error('generateCVPreview not available');
+                }
+            } catch (error) {
+                log(`Full data test failed: ${error.message}`, 'error');
+                showStatus(`Test failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Wait for main script to load
+        window.addEventListener('load', () => {
+            log('Test page loaded', 'info');
+            log('Waiting for main script...', 'info');
+            
+            // Load the main script
+            const script = document.createElement('script');
+            script.src = 'script.js';
+            script.onload = () => {
+                log('Main script loaded', 'success');
+                setTimeout(() => {
+                    checkFunctions();
+                }, 500);
+            };
+            script.onerror = () => {
+                log('Failed to load main script', 'error');
+            };
+            document.head.appendChild(script);
+            
+            // Also load styles
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'styles.css';
+            document.head.appendChild(link);
+        });
+    </script>
+</body>
+</html>

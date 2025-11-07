@@ -41,6 +41,20 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Set up live preview
         setupLivePreview();
+        
+        // Initial check for preview - check for any existing data
+        setTimeout(() => {
+            const fullName = document.getElementById('fullName')?.value;
+            const savedData = localStorage.getItem('cvFormData');
+            console.log('Initial check - fullName:', fullName, 'savedData exists:', !!savedData);
+            
+            if (fullName || savedData) {
+                console.log('Triggering initial preview update...');
+                updateLivePreview();
+            } else {
+                console.log('No initial data found, waiting for user input...');
+            }
+        }, 500);
     }
     // Add test data button
     function addTestDataButton() {
@@ -73,11 +87,36 @@ document.addEventListener('DOMContentLoaded', function() {
         if (toggleBtn && advancedSection) {
             toggleBtn.addEventListener('click', function() {
                 if (advancedSection.style.display === 'none') {
+                    // Opening advanced options
                     advancedSection.style.display = 'block';
                     toggleBtn.textContent = '🎨 Hide Advanced Options';
+                    
+                    console.log('🎆 Advanced options opened - generating HTML preview...');
+                    
+                    // Automatically generate preview with current data to show advanced effects
+                    const formData = collectFormData();
+                    if (formData) {
+                        // Set preview mode to HTML with effects
+                        formData.previewMode = 'html-advanced';
+                        generateCVPreview(formData);
+                        showMessage('Advanced preview mode activated! Changes will appear live.', 'info');
+                    } else {
+                        // If no data, prompt user to fill basic info first
+                        showMessage('Please enter at least your name and title to see advanced preview', 'info');
+                    }
                 } else {
+                    // Closing advanced options
                     advancedSection.style.display = 'none';
                     toggleBtn.textContent = '🎨 Show Advanced Options (HTML Only)';
+                    
+                    console.log('🃋 Switching back to standard preview...');
+                    
+                    // Regenerate with standard preview
+                    const formData = collectFormData();
+                    if (formData) {
+                        formData.previewMode = 'standard';
+                        generateCVPreview(formData);
+                    }
                 }
             });
         }
@@ -91,6 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (glowSlider && glowValue) {
             glowSlider.addEventListener('input', function() {
                 glowValue.textContent = this.value + '%';
+                console.log('✨ Glow intensity changed:', this.value + '%');
                 updateLivePreview();
             });
         }
@@ -98,9 +138,52 @@ document.addEventListener('DOMContentLoaded', function() {
         if (blurSlider && blurValue) {
             blurSlider.addEventListener('input', function() {
                 blurValue.textContent = this.value + 'px';
+                console.log('🌫 Blur effect changed:', this.value + 'px');
                 updateLivePreview();
             });
         }
+        
+        // Add listeners for all advanced option selects
+        const advancedSelects = [
+            'animationType',
+            'backgroundEffect', 
+            'textEffect',
+            'borderStyle'
+        ];
+        
+        advancedSelects.forEach(selectId => {
+            const selectElement = document.getElementById(selectId);
+            if (selectElement) {
+                selectElement.addEventListener('change', function() {
+                    console.log(`🎨 ${selectId} changed to:`, this.value);
+                    updateLivePreview();
+                });
+            }
+        });
+        
+        // Add listeners for advanced checkboxes
+        const advancedCheckboxes = [
+            'parallax',
+            'hoverEffects',
+            'soundEffects',
+            'darkMode',
+            'confetti',
+            'magneticCursor',
+            'scrollAnimations',
+            'cursorTrail',
+            'easterEggs',
+            'interactiveElements'
+        ];
+        
+        advancedCheckboxes.forEach(checkboxId => {
+            const checkbox = document.getElementById(checkboxId);
+            if (checkbox) {
+                checkbox.addEventListener('change', function() {
+                    console.log(`✅ ${checkboxId}:`, this.checked ? 'enabled' : 'disabled');
+                    updateLivePreview();
+                });
+            }
+        })
         
         // Color scheme presets
         const colorScheme = document.getElementById('colorScheme');
@@ -141,6 +224,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Setup live preview
     function setupLivePreview() {
+        console.log('Setting up live preview system...');
+        
         // Auto-generate CV when the form loads if there's data
         if (localStorage.getItem('cvData')) {
             generateCVPreview();
@@ -149,49 +234,108 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add change listeners to all form inputs for live preview
         const form = document.getElementById('cvForm');
         if (form) {
-            const inputs = form.querySelectorAll('input, textarea, select');
-            inputs.forEach(input => {
-                // Skip file inputs
-                if (input.type === 'file') return;
-                
-                // Debounced update for text inputs
-                if (input.type === 'text' || input.type === 'textarea' || input.type === 'email' || input.type === 'tel' || input.type === 'url') {
-                    let timeout;
-                    input.addEventListener('input', function() {
-                        clearTimeout(timeout);
-                        timeout = setTimeout(() => {
-                            updateLivePreview();
-                        }, 500); // Wait 500ms after user stops typing
-                    });
-                } else {
-                    // Immediate update for other inputs
-                    input.addEventListener('change', function() {
+            // Setup for all input types
+            const textInputs = form.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="url"], input[type="number"], textarea');
+            const selectInputs = form.querySelectorAll('select');
+            const checkboxInputs = form.querySelectorAll('input[type="checkbox"]');
+            const radioInputs = form.querySelectorAll('input[type="radio"]');
+            const colorInputs = form.querySelectorAll('input[type="color"]');
+            const rangeInputs = form.querySelectorAll('input[type="range"]');
+            
+            // Debounced update for text inputs
+            let debounceTimer;
+            textInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(() => {
+                        console.log('Text input changed, updating preview...');
                         updateLivePreview();
-                    });
-                }
+                    }, 300); // Faster response - 300ms
+                });
+                
+                // Also update on blur for immediate feedback when leaving field
+                input.addEventListener('blur', function() {
+                    clearTimeout(debounceTimer);
+                    updateLivePreview();
+                });
+            });
+            
+            // Immediate update for select dropdowns
+            selectInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    console.log('Select changed, updating preview...');
+                    updateLivePreview();
+                });
+            });
+            
+            // Immediate update for checkboxes
+            checkboxInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    console.log('Checkbox changed, updating preview...');
+                    updateLivePreview();
+                });
+            });
+            
+            // Immediate update for radio buttons
+            radioInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    updateLivePreview();
+                });
+            });
+            
+            // Immediate update for color inputs
+            colorInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    updateLivePreview();
+                });
+            });
+            
+            // Immediate update for range sliders
+            rangeInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    updateLivePreview();
+                });
             });
         }
-        
-        // Add listeners for advanced options checkboxes
-        const checkboxes = document.querySelectorAll('#advancedOptions input[type="checkbox"]');
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', updateLivePreview);
-        });
-        
-        // Add listeners for select dropdowns in advanced options
-        const selects = document.querySelectorAll('#advancedOptions select');
-        selects.forEach(select => {
-            select.addEventListener('change', updateLivePreview);
-        });
     }
     
     // Update live preview
     function updateLivePreview() {
         // Only update if we have some basic data
         const fullName = document.getElementById('fullName')?.value;
-        if (fullName) {
-            generateCVPreview();
+        if (fullName && fullName.trim() !== '') {
+            // Show live update indicator
+            showLiveIndicator();
+            try {
+                const formData = collectFormData();
+                if (formData) {
+                    generateCVPreview(formData);
+                }
+            } catch (error) {
+                console.error('Error updating preview:', error);
+            }
         }
+    }
+    
+    // Show live update indicator
+    function showLiveIndicator() {
+        let indicator = document.querySelector('.live-indicator');
+        if (!indicator) {
+            indicator = document.createElement('div');
+            indicator.className = 'live-indicator';
+            indicator.textContent = 'LIVE Preview Active';
+            document.body.appendChild(indicator);
+        }
+        
+        indicator.style.animation = 'none';
+        setTimeout(() => {
+            indicator.style.animation = 'pulse 2s infinite';
+        }, 10);
+        
+        // Hide after 2 seconds
+        setTimeout(() => {
+            indicator.style.opacity = '0.5';
+        }, 2000);
     }
     
     // Apply color scheme presets
@@ -263,11 +407,11 @@ document.addEventListener('DOMContentLoaded', function() {
             personal: {
                 fullName: 'Alex Johnson',
                 title: 'Senior Full Stack Developer',
-                age: '28',
-                email: 'alex.johnson@email.com',
+                email: 'alex.johnson@example.com',
                 phone: '+1 (555) 123-4567',
                 location: 'San Francisco, CA',
-                summary: 'Passionate full-stack developer with 6+ years of experience building scalable web applications. Expertise in React, Node.js, and cloud technologies. Strong background in leading development teams and delivering high-quality software solutions.'
+                age: '32',
+                summary: 'Passionate and experienced Full Stack Developer with 8+ years of experience in building scalable web applications. Specialized in React, Node.js, and cloud architecture.'
             },
             links: {
                 portfolio: 'https://alexjohnson.dev',
@@ -317,16 +461,63 @@ document.addEventListener('DOMContentLoaded', function() {
                 frameworks: 'React, Vue.js, Node.js, Express, Django, Spring Boot',
                 tools: 'Git, Docker, Kubernetes, AWS, MongoDB, PostgreSQL, Redis',
                 other: 'RESTful APIs, GraphQL, Microservices, CI/CD, Agile, TDD'
+            },
+            customization: {
+                primaryColor: '#667eea',
+                accentColor: '#764ba2',
+                fontStyle: 'modern',
+                layout: 'classic'
             }
         };
         
         fillFormWithData(testData);
-        showMessage('Test data filled successfully! Feel free to modify any fields.', 'success');
         
-        // Auto-generate preview
+        // Also fill advanced options
+        document.getElementById('animationType').value = 'liquid';
+        document.getElementById('backgroundEffect').value = 'particles';
+        document.getElementById('textEffect').value = 'glow';
+        document.getElementById('borderStyle').value = 'glassmorphism';
+        document.getElementById('glowIntensity').value = '75';
+        document.getElementById('blurEffect').value = '5';
+        document.getElementById('parallax').checked = true;
+        document.getElementById('hoverEffects').checked = true;
+        document.getElementById('scrollReveal').checked = true;
+        document.getElementById('floatingElements').checked = true;
+        document.getElementById('tiltEffect').checked = true;
+        document.getElementById('colorScheme').value = 'cyberpunk';
+        document.getElementById('profileAnimation').value = 'morph';
+        
+        // Show advanced options
+        const advancedSection = document.getElementById('advancedOptions');
+        const toggleBtn = document.getElementById('toggleAdvanced');
+        if (advancedSection && toggleBtn) {
+            advancedSection.style.display = 'block';
+            toggleBtn.textContent = '🎨 Hide Advanced Options';
+        }
+        
+        showMessage('Test data filled with advanced options! Feel free to modify any fields.', 'success');
+        
+        // Auto-generate preview after filling data
         setTimeout(() => {
-            generateBtn.click();
-        }, 500);
+            console.log('Auto-generating preview after test data fill...');
+            // Force update live preview
+            const fullName = document.getElementById('fullName')?.value;
+            if (fullName) {
+                const formData = collectFormData();
+                if (formData) {
+                    console.log('Generating preview with test data...');
+                    generateCVPreview(formData);
+                    
+                    // Enable download button
+                    const downloadBtn = document.getElementById('downloadPDF');
+                    if (downloadBtn) {
+                        downloadBtn.disabled = false;
+                    }
+                    
+                    showMessage('Test data loaded and preview generated!', 'success');
+                }
+            }
+        }, 200);
     }
     
     // Show status message
@@ -818,26 +1009,48 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Generate CV
-    generateBtn.addEventListener('click', () => {
-        const formData = collectFormData();
-        
-        if (!validateFormData(formData)) {
-            showMessage('Please fill in at least your name and title to generate a CV.', 'error');
-            return;
-        }
-        
-        generateCVPreview(formData);
-        downloadBtn.disabled = false;
-        
-        // Enable export button
-        const exportBtn = document.getElementById('exportHTML');
-        if (exportBtn) {
-            exportBtn.disabled = false;
-        }
-        
-        showMessage('CV generated successfully!', 'success');
-    });
+    // Generate CV button
+    if (generateBtn) {
+        console.log('✅ Generate CV button found, adding listener...');
+        generateBtn.addEventListener('click', function() {
+            console.log('🔄 Generate CV button clicked!');
+            try {
+                const formData = collectFormData();
+                console.log('📝 Form data collected:', formData);
+                
+                if (!formData) {
+                    console.error('❌ No form data collected!');
+                    showMessage('Error collecting form data. Please check the console.', 'error');
+                    return;
+                }
+                
+                if (validateFormData(formData)) {
+                    console.log('✅ Form data validated, generating preview...');
+                    generateCVPreview(formData);
+                    
+                    if (downloadBtn) {
+                        downloadBtn.disabled = false;
+                    }
+                    
+                    // Enable export button
+                    const exportBtn = document.getElementById('exportHTML');
+                    if (exportBtn) {
+                        exportBtn.disabled = false;
+                    }
+                    showMessage('CV generated successfully!', 'success');
+                } else {
+                    console.error('❌ Form validation failed!');
+                    showMessage('Please enter at least your name and title to generate CV.', 'error');
+                }
+            } catch (error) {
+                console.error('❌ Error in Generate CV:', error);
+                showMessage(`Error generating CV: ${error.message}`, 'error');
+            }
+        });
+        console.log('✅ Generate CV listener attached successfully');
+    } else {
+        console.error('❌ Generate CV button not found in DOM!');
+    }
     
     // Export as HTML/CSS/JS
     function exportAsHTML() {
@@ -2329,39 +2542,41 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Collect form data
     function collectFormData() {
-        const data = {
+        console.log('📋 Collecting form data...');
+        try {
+            const data = {
             personal: {
-                fullName: document.getElementById('fullName').value,
-                title: document.getElementById('title').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                location: document.getElementById('location').value,
-                linkedin: document.getElementById('linkedin').value,
-                github: document.getElementById('github').value,
-                website: document.getElementById('website').value,
-                summary: document.getElementById('summary').value,
+                fullName: document.getElementById('fullName')?.value || '',
+                title: document.getElementById('title')?.value || '',
+                email: document.getElementById('email')?.value || '',
+                phone: document.getElementById('phone')?.value || '',
+                location: document.getElementById('location')?.value || '',
+                linkedin: document.getElementById('linkedin')?.value || '',
+                github: document.getElementById('github')?.value || '',
+                website: document.getElementById('website')?.value || '',
+                summary: document.getElementById('summary')?.value || '',
                 profilePic: document.getElementById('profileImg')?.src || '',
                 profileAnimation: document.getElementById('profileAnimation')?.value || 'none'
             },
             links: {
-                portfolio: document.getElementById('portfolio').value,
-                github: document.getElementById('github').value,
-                linkedin: document.getElementById('linkedin').value
+                portfolio: document.getElementById('portfolio')?.value || '',
+                github: document.getElementById('github')?.value || '',
+                linkedin: document.getElementById('linkedin')?.value || ''
             },
             workExperience: [],
             projects: [],
             education: [],
             skills: {
-                languages: document.getElementById('languages').value,
-                frameworks: document.getElementById('frameworks').value,
-                tools: document.getElementById('tools').value,
-                other: document.getElementById('otherSkills').value
+                languages: document.getElementById('languages')?.value || '',
+                frameworks: document.getElementById('frameworks')?.value || '',
+                tools: document.getElementById('tools')?.value || '',
+                other: document.getElementById('otherSkills')?.value || ''
             },
             customization: {
-                primaryColor: document.getElementById('primaryColor').value,
-                accentColor: document.getElementById('accentColor').value,
-                fontStyle: document.getElementById('fontStyle').value,
-                layout: document.getElementById('layout').value
+                primaryColor: document.getElementById('primaryColor')?.value || '#2c3e50',
+                accentColor: document.getElementById('accentColor')?.value || '#3498db',
+                fontStyle: document.getElementById('fontStyle')?.value || 'modern',
+                layout: document.getElementById('layout')?.value || 'modern'
             },
             advanced: {
                 animationType: document.getElementById('animationType')?.value || 'none',
@@ -2438,12 +2653,57 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        return data;
+            // Log successful collection
+            console.log('✅ Form data collection complete');
+            console.log('   Personal data collected:', {
+                name: data.personal.fullName || 'EMPTY',
+                title: data.personal.title || 'EMPTY',
+                email: data.personal.email || 'EMPTY'
+            });
+            console.log('   Work entries:', data.workExperience.length);
+            console.log('   Projects:', data.projects.length);
+            console.log('   Education entries:', data.education.length);
+            
+            return data;
+        } catch (error) {
+            console.error('❌ Error collecting form data:', error);
+            console.error('   Error details:', error.stack);
+            // Return a minimal valid structure even on error
+            return {
+                personal: {
+                    fullName: document.getElementById('fullName')?.value || '',
+                    title: document.getElementById('title')?.value || ''
+                },
+                workExperience: [],
+                projects: [],
+                education: [],
+                skills: {},
+                customization: {
+                    primaryColor: '#2c3e50',
+                    accentColor: '#3498db',
+                    fontStyle: 'modern',
+                    layout: 'modern'
+                },
+                advanced: {}
+            };
+        }
     }
     
     // Validate form data
     function validateFormData(data) {
-        return data.personal.fullName && data.personal.title;
+        if (!data) {
+            console.error('❌ No data to validate');
+            return false;
+        }
+        if (!data.personal) {
+            console.error('❌ No personal data found');
+            return false;
+        }
+        const isValid = data.personal.fullName && data.personal.title;
+        console.log(`🔍 Validation result: ${isValid ? '✅ Valid' : '❌ Invalid'}`);
+        console.log(`   - Name: "${data.personal.fullName || 'MISSING'}"`);  
+        console.log(`   - Title: "${data.personal.title || 'MISSING'}"`);
+        return isValid;
     }
     
     // Format date
@@ -2455,12 +2715,83 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Generate CV preview
     function generateCVPreview(data) {
+        console.log('🎨 Starting CV preview generation...');
+        console.log('   Data received:', data);
+        console.log('   Preview mode:', data.previewMode || 'standard');
+        
+        // Get preview element
+        const preview = document.getElementById('cvPreview');
+        if (!preview) {
+            console.error('❌ Preview element not found!');
+            showMessage('Preview element not found. Please refresh the page.', 'error');
+            return;
+        }
+        console.log('✅ Preview element found');
+        
+        // Remove placeholder if exists
+        const placeholder = preview.querySelector('.preview-placeholder');
+        if (placeholder) {
+            placeholder.style.display = 'none';
+        }
+        
         const layoutClass = `layout-${data.customization.layout}`;
         const fontClass = `font-${data.customization.fontStyle}`;
         
+        // Build advanced effect classes if in advanced mode
+        let advancedClasses = '';
+        let advancedStyles = '';
+        let advancedScripts = '';
+        
+        if (data.previewMode === 'html-advanced' && data.advanced) {
+            console.log('🎆 Applying advanced effects...');
+            
+            // Animation classes
+            if (data.advanced.animationType && data.advanced.animationType !== 'none') {
+                advancedClasses += ` animation-${data.advanced.animationType}`;
+                console.log('   Animation:', data.advanced.animationType);
+            }
+            
+            // Background effect
+            if (data.advanced.backgroundEffect && data.advanced.backgroundEffect !== 'none') {
+                advancedClasses += ` bg-effect-${data.advanced.backgroundEffect}`;
+                console.log('   Background:', data.advanced.backgroundEffect);
+            }
+            
+            // Text effect
+            if (data.advanced.textEffect && data.advanced.textEffect !== 'none') {
+                advancedClasses += ` text-effect-${data.advanced.textEffect}`;
+                console.log('   Text effect:', data.advanced.textEffect);
+            }
+            
+            // Border style
+            if (data.advanced.borderStyle && data.advanced.borderStyle !== 'none') {
+                advancedClasses += ` border-style-${data.advanced.borderStyle}`;
+                console.log('   Border:', data.advanced.borderStyle);
+            }
+            
+            // Additional effects
+            if (data.advanced.parallax) advancedClasses += ' parallax-enabled';
+            if (data.advanced.darkMode) advancedClasses += ' dark-mode';
+            if (data.advanced.hoverEffects) advancedClasses += ' hover-effects';
+            if (data.advanced.magneticCursor) advancedClasses += ' magnetic-cursor';
+            
+            // Glow and blur effects
+            advancedStyles = `
+                --glow-intensity: ${data.advanced.glowIntensity || '50'}%;
+                --blur-amount: ${data.advanced.blurEffect || '0'}px;
+                filter: blur(var(--blur-amount));
+                text-shadow: 0 0 calc(var(--glow-intensity) * 0.2px) var(--cv-accent);
+            `;
+        }
+        
         let cvHTML = `
-            <div class="cv-content ${layoutClass} ${fontClass}" style="--cv-primary: ${data.customization.primaryColor}; --cv-accent: ${data.customization.accentColor};">
+            <div class="cv-content ${layoutClass} ${fontClass} ${advancedClasses}" style="--cv-primary: ${data.customization.primaryColor}; --cv-accent: ${data.customization.accentColor}; ${advancedStyles}">
                 <div class="cv-header">
+                    ${data.personal.profilePic ? `
+                        <div class="cv-profile-pic profile-animation-${data.personal.profileAnimation}">
+                            <img src="${data.personal.profilePic}" alt="${data.personal.fullName}">
+                        </div>
+                    ` : ''}
                     <h1>${data.personal.fullName}</h1>
                     <div class="title">${data.personal.title}</div>
                     <div class="contact-info">
@@ -2584,60 +2915,131 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         
-        preview.innerHTML = cvHTML;
+preview.innerHTML = cvHTML;
+
+// Apply advanced JavaScript effects if in advanced mode
+if (data.previewMode === 'html-advanced' && data.advanced) {
+    // Add dynamic background particles if selected
+    if (data.advanced.backgroundEffect === 'particles') {
+        createParticleEffect(preview);
     }
     
-    // Download PDF
-    downloadBtn.addEventListener('click', () => {
-        const element = document.querySelector('.cv-content');
-        
-        if (!element) {
-            showMessage('Please generate a CV first before downloading.', 'error');
-            return;
-        }
-        
-        // Show loading message
-        showMessage('Generating PDF... Please wait.', 'success');
-        
-        const opt = {
-            margin: 10,
-            filename: 'my-cv.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { 
-                scale: 2,
-                useCORS: true,
-                logging: false
-            },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-        
-        html2pdf().set(opt).from(element).save().then(() => {
-            showMessage('PDF downloaded successfully!', 'success');
-        }).catch((error) => {
-            showMessage('Error generating PDF. Please try again.', 'error');
-            console.error('PDF generation error:', error);
-        });
-    });
+    // Add confetti if enabled
+    if (data.advanced.confetti) {
+        setTimeout(() => {
+            showConfetti();
+        }, 500);
+    }
     
-    // Auto-save form data to localStorage
-    let saveTimeout;
-    form.addEventListener('input', () => {
-        clearTimeout(saveTimeout);
-        saveTimeout = setTimeout(() => {
-            const formData = new FormData(form);
-            const data = {};
-            for (let [key, value] of formData.entries()) {
-                if (!data[key]) {
-                    data[key] = value;
-                } else {
-                    if (!Array.isArray(data[key])) {
-                        data[key] = [data[key]];
-                    }
-                    data[key].push(value);
+    // Add interactive elements if enabled
+    if (data.advanced.interactiveElements) {
+        addInteractiveElements(preview);
+    }
+    
+    // Show effect indicator
+    showEffectIndicator(data.advanced);
+}
+}
+
+// Helper function to create particle effect
+function createParticleEffect(container) {
+    console.log('🌠 Creating particle effect...');
+    // Particle effect implementation would go here
+}
+
+// Helper function to show confetti
+function showConfetti() {
+    console.log('🎉 Showing confetti...');
+    // Confetti implementation would go here
+}
+
+// Helper function to add interactive elements
+function addInteractiveElements(container) {
+    console.log('🎮 Adding interactive elements...');
+    // Interactive elements implementation would go here
+}
+
+// Helper function to show active effects indicator
+function showEffectIndicator(advanced) {
+    const activeEffects = [];
+    if (advanced.animationType && advanced.animationType !== 'none') activeEffects.push(`Animation: ${advanced.animationType}`);
+    if (advanced.backgroundEffect && advanced.backgroundEffect !== 'none') activeEffects.push(`Background: ${advanced.backgroundEffect}`);
+    if (advanced.textEffect && advanced.textEffect !== 'none') activeEffects.push(`Text: ${advanced.textEffect}`);
+    if (advanced.borderStyle && advanced.borderStyle !== 'none') activeEffects.push(`Border: ${advanced.borderStyle}`);
+    
+    if (activeEffects.length > 0) {
+        console.log('🌆 Active effects:', activeEffects.join(', '));
+        showMessage(`Active effects: ${activeEffects.join(', ')}`, 'info');
+    }
+}
+
+// Expose critical functions globally
+window.updateLivePreview = updateLivePreview;
+window.generateCVPreview = generateCVPreview;
+window.collectFormData = collectFormData;
+window.showMessage = showMessage;
+window.fillWithTestData = fillWithTestData;
+        
+console.log(' Global functions exposed:', {
+    updateLivePreview: typeof window.updateLivePreview,
+    generateCVPreview: typeof window.generateCVPreview,
+    collectFormData: typeof window.collectFormData,
+    showMessage: typeof window.showMessage
+});
+
+// Download PDF button
+if (downloadBtn) {
+    downloadBtn.addEventListener('click', () => {
+    const element = document.querySelector('.cv-content');
+        
+    if (!element) {
+        showMessage('Please generate a CV first before downloading.', 'error');
+        return;
+    }
+        
+    // Show loading message
+    showMessage('Generating PDF... Please wait.', 'success');
+        
+    const opt = {
+        margin: 10,
+        filename: 'my-cv.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+            scale: 2,
+            useCORS: true,
+            logging: false
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+        
+    html2pdf().set(opt).from(element).save().then(() => {
+        showMessage('PDF downloaded successfully!', 'success');
+    }).catch((error) => {
+        showMessage('Error generating PDF. Please try again.', 'error');
+        console.error('PDF generation error:', error);
+    });
+});
+} else {
+    console.warn('⚠️ Download PDF button not found');
+}
+
+// Form auto-save functionality
+if (form) {
+    // Save form data to localStorage on change
+    form.addEventListener('change', () => {
+        const formData = new FormData(form);
+        const data = {};
+        for (let [key, value] of formData.entries()) {
+            if (!data[key]) {
+                data[key] = value;
+            } else {
+                if (!Array.isArray(data[key])) {
+                    data[key] = [data[key]];
                 }
+                data[key].push(value);
             }
-            localStorage.setItem('cvFormData', JSON.stringify(data));
-        }, 1000);
+        }
+        localStorage.setItem('cvFormData', JSON.stringify(data));
     });
     
     // Load saved form data
@@ -2667,4 +3069,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error loading saved data:', e);
         }
     }
+}
+
 });

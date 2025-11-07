@@ -559,6 +559,182 @@ legend {
     background: #1d4ed8;
 }
 
+/* Profile Picture Styles */
+.cv-profile-pic {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 1.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid white;
+    box-shadow: 0 0 30px rgba(0,0,0,0.2);
+}
+
+.cv-profile-pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Profile Picture Animations */
+.profile-animation-spin {
+    animation: spin 3s linear infinite;
+}
+
+.profile-animation-pulse {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.profile-animation-morph {
+    animation: morph 8s ease-in-out infinite;
+}
+
+.profile-animation-glitch {
+    animation: glitch 2s infinite;
+}
+
+.profile-animation-rainbow {
+    animation: rainbowBorder 3s linear infinite;
+}
+
+.profile-animation-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+.profile-animation-shake {
+    animation: shake 0.5s infinite;
+}
+
+.profile-animation-flip {
+    animation: flip3d 4s ease-in-out infinite;
+}
+
+.profile-animation-glow {
+    animation: glow 2s ease-in-out infinite;
+}
+
+.profile-animation-heartbeat {
+    animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+.profile-animation-swing {
+    animation: swing 2s ease-in-out infinite;
+}
+
+.profile-animation-bounce {
+    animation: bounce 2s infinite;
+}
+
+.profile-animation-jello {
+    animation: jello 2s infinite;
+}
+
+.profile-animation-rubberBand {
+    animation: rubberBand 1.5s infinite;
+}
+
+.profile-animation-tada {
+    animation: tada 2s infinite;
+}
+
+/* Animation Keyframes */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes morph {
+    0%, 100% { border-radius: 50%; }
+    25% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+    50% { border-radius: 70% 30% 30% 70% / 70% 70% 30% 30%; }
+    75% { border-radius: 30% 70% 70% 30% / 70% 30% 30% 70%; }
+}
+
+@keyframes glitch {
+    0%, 100% { filter: hue-rotate(0deg); transform: scale(1); }
+    20% { filter: hue-rotate(90deg); transform: scale(1.05) translateX(-5px); }
+    40% { filter: hue-rotate(180deg); transform: scale(0.95) translateX(5px); }
+    60% { filter: hue-rotate(270deg); transform: scale(1.05) translateY(-5px); }
+    80% { filter: hue-rotate(360deg); transform: scale(0.95) translateY(5px); }
+}
+
+@keyframes rainbowBorder {
+    0% { border-color: red; }
+    17% { border-color: orange; }
+    33% { border-color: yellow; }
+    50% { border-color: green; }
+    67% { border-color: blue; }
+    83% { border-color: indigo; }
+    100% { border-color: violet; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+@keyframes flip3d {
+    0%, 100% { transform: perspective(400px) rotateY(0); }
+    50% { transform: perspective(400px) rotateY(180deg); }
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 30px rgba(0,0,0,0.2), 0 0 60px var(--primary-color); }
+    50% { box-shadow: 0 0 30px rgba(0,0,0,0.2), 0 0 100px var(--primary-color); }
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    14% { transform: scale(1.3); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.3); }
+}
+
+@keyframes swing {
+    0%, 100% { transform: rotate(-10deg); }
+    50% { transform: rotate(10deg); }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-30px); }
+    60% { transform: translateY(-15px); }
+}
+
+@keyframes jello {
+    0%, 100% { transform: scale(1, 1); }
+    25% { transform: scale(0.9, 1.1); }
+    50% { transform: scale(1.1, 0.9); }
+    75% { transform: scale(0.95, 1.05); }
+}
+
+@keyframes rubberBand {
+    0%, 100% { transform: scale(1); }
+    30% { transform: scale(1.25, 0.75); }
+    40% { transform: scale(0.75, 1.25); }
+    50% { transform: scale(1.15, 0.85); }
+    65% { transform: scale(0.95, 1.05); }
+    75% { transform: scale(1.05, 0.95); }
+}
+
+@keyframes tada {
+    0%, 100% { transform: scale(1) rotate(0); }
+    10%, 20% { transform: scale(0.9) rotate(-3deg); }
+    30%, 50%, 70%, 90% { transform: scale(1.1) rotate(3deg); }
+    40%, 60%, 80% { transform: scale(1.1) rotate(-3deg); }
+}
+
 /* Advanced Options Styles */
 .advanced-toggle {
     margin-top: 1.5rem;
@@ -644,6 +820,57 @@ input[type="range"] {
     margin-left: 1rem;
     font-weight: 600;
     color: var(--primary-color);
+}
+
+/* Portfolio Layout Styles */
+.portfolio-layout .cv-content {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.portfolio-layout .cv-section {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4rem 2rem;
+    position: relative;
+}
+
+.portfolio-layout .cv-header {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background: linear-gradient(135deg, var(--cv-primary) 0%, var(--cv-accent) 100%);
+}
+
+/* Auto-update Preview Indicator */
+.live-indicator {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #10b981;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    z-index: 1000;
+    animation: pulse 2s infinite;
+}
+
+.live-indicator::before {
+    content: '🔴';
+    margin-right: 5px;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
 }
 
 /* Print Styles */

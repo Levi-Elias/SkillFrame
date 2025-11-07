@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Preview Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="portfolio-animations.css">
+    <style>
+        .test-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .control-panel {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            max-width: 300px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        .control-panel h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .control-group {
+            margin: 15px 0;
+        }
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .control-group select,
+        .control-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .preview-container {
+            margin-right: 340px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            min-height: 500px;
+        }
+        .status-bar {
+            background: #2c3e50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-family: monospace;
+        }
+        .effect-indicator {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #3498db;
+            color: white;
+            border-radius: 3px;
+            margin-right: 10px;
+            font-size: 0.85em;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎨 Advanced CV Preview Test</h1>
+        
+        <div class="control-panel">
+            <h3>🎛️ Advanced Controls</h3>
+            
+            <div class="control-group">
+                <label>Animation Type</label>
+                <select id="animationType" onchange="updatePreview()">
+                    <option value="none">None</option>
+                    <option value="fade">Fade In</option>
+                    <option value="slide">Slide In</option>
+                    <option value="bounce">Bounce In</option>
+                    <option value="zoom">Zoom In</option>
+                    <option value="liquid">Liquid Morph</option>
+                    <option value="glitch">Glitch Effect</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>Background Effect</label>
+                <select id="backgroundEffect" onchange="updatePreview()">
+                    <option value="none">None</option>
+                    <option value="gradient-animated">Animated Gradient</option>
+                    <option value="particles">Particles</option>
+                    <option value="stars">Starfield</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>Text Effect</label>
+                <select id="textEffect" onchange="updatePreview()">
+                    <option value="none">None</option>
+                    <option value="glow">Neon Glow</option>
+                    <option value="shadow">3D Shadow</option>
+                    <option value="gradient">Gradient Text</option>
+                    <option value="rainbow">Rainbow Animation</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>Border Style</label>
+                <select id="borderStyle" onchange="updatePreview()">
+                    <option value="none">None</option>
+                    <option value="animated">Animated Border</option>
+                    <option value="glow">Glowing Border</option>
+                    <option value="glassmorphism">Glassmorphism</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>Glow Intensity</label>
+                <input type="range" id="glowIntensity" min="0" max="100" value="50" onchange="updatePreview()">
+                <span id="glowValue">50%</span>
+            </div>
+            
+            <div class="control-group">
+                <label>
+                    <input type="checkbox" id="darkMode" onchange="updatePreview()">
+                    Dark Mode
+                </label>
+            </div>
+            
+            <div class="control-group">
+                <label>
+                    <input type="checkbox" id="hoverEffects" onchange="updatePreview()">
+                    Hover Effects
+                </label>
+            </div>
+            
+            <div class="control-group">
+                <label>
+                    <input type="checkbox" id="parallax" onchange="updatePreview()">
+                    Parallax
+                </label>
+            </div>
+            
+            <button onclick="generateWithEffects()" style="width: 100%; padding: 12px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 20px;">
+                🚀 Generate with Effects
+            </button>
+        </div>
+        
+        <div class="status-bar">
+            <strong>Active Effects:</strong>
+            <span id="activeEffects">None</span>
+        </div>
+        
+        <div class="preview-container">
+            <div id="cvPreview">
+                <p style="text-align: center; color: #999;">Generate a preview to see advanced effects...</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        // Update preview with selected effects
+        function updatePreview() {
+            console.log('🔄 Updating preview with advanced effects...');
+            
+            const effects = {
+                animationType: document.getElementById('animationType').value,
+                backgroundEffect: document.getElementById('backgroundEffect').value,
+                textEffect: document.getElementById('textEffect').value,
+                borderStyle: document.getElementById('borderStyle').value,
+                glowIntensity: document.getElementById('glowIntensity').value,
+                darkMode: document.getElementById('darkMode').checked,
+                hoverEffects: document.getElementById('hoverEffects').checked,
+                parallax: document.getElementById('parallax').checked
+            };
+            
+            // Update status bar
+            updateStatusBar(effects);
+            
+            // Update glow value display
+            document.getElementById('glowValue').textContent = effects.glowIntensity + '%';
+            
+            // If we have a preview, apply effects
+            const cvContent = document.querySelector('.cv-content');
+            if (cvContent) {
+                applyEffectsToPreview(cvContent, effects);
+            }
+        }
+        
+        function applyEffectsToPreview(element, effects) {
+            // Remove all effect classes
+            element.className = element.className.replace(/\s*(animation|bg-effect|text-effect|border-style|dark-mode|hover-effects|parallax-enabled)-\S+/g, '');
+            
+            // Apply new effect classes
+            if (effects.animationType !== 'none') {
+                element.classList.add(`animation-${effects.animationType}`);
+            }
+            if (effects.backgroundEffect !== 'none') {
+                element.classList.add(`bg-effect-${effects.backgroundEffect}`);
+            }
+            if (effects.textEffect !== 'none') {
+                element.classList.add(`text-effect-${effects.textEffect}`);
+            }
+            if (effects.borderStyle !== 'none') {
+                element.classList.add(`border-style-${effects.borderStyle}`);
+            }
+            if (effects.darkMode) {
+                element.classList.add('dark-mode');
+            }
+            if (effects.hoverEffects) {
+                element.classList.add('hover-effects');
+            }
+            if (effects.parallax) {
+                element.classList.add('parallax-enabled');
+            }
+            
+            // Apply glow intensity
+            element.style.setProperty('--glow-intensity', effects.glowIntensity + '%');
+        }
+        
+        function updateStatusBar(effects) {
+            const activeList = [];
+            if (effects.animationType !== 'none') activeList.push(`Animation: ${effects.animationType}`);
+            if (effects.backgroundEffect !== 'none') activeList.push(`BG: ${effects.backgroundEffect}`);
+            if (effects.textEffect !== 'none') activeList.push(`Text: ${effects.textEffect}`);
+            if (effects.borderStyle !== 'none') activeList.push(`Border: ${effects.borderStyle}`);
+            if (effects.darkMode) activeList.push('Dark Mode');
+            if (effects.hoverEffects) activeList.push('Hover Effects');
+            if (effects.parallax) activeList.push('Parallax');
+            
+            const statusElement = document.getElementById('activeEffects');
+            if (activeList.length > 0) {
+                statusElement.innerHTML = activeList.map(effect => 
+                    `<span class="effect-indicator">${effect}</span>`
+                ).join('');
+            } else {
+                statusElement.textContent = 'None';
+            }
+        }
+        
+        function generateWithEffects() {
+            console.log('🚀 Generating CV with advanced effects...');
+            
+            // Create test data
+            const testData = {
+                personal: {
+                    fullName: 'John Doe',
+                    title: 'Senior Full Stack Developer',
+                    email: 'john.doe@example.com',
+                    phone: '+1 (555) 123-4567',
+                    location: 'San Francisco, CA',
+                    summary: 'Experienced developer with 10+ years building scalable web applications. Expert in React, Node.js, and cloud technologies.'
+                },
+                workExperience: [{
+                    company: 'Tech Corp',
+                    position: 'Senior Developer',
+                    startDate: '2020-01',
+                    endDate: '',
+                    description: 'Led development of key features and mentored junior developers.'
+                }],
+                skills: {
+                    languages: 'JavaScript, TypeScript, Python',
+                    frameworks: 'React, Node.js, Express',
+                    tools: 'Git, Docker, AWS'
+                },
+                education: [{
+                    school: 'MIT',
+                    degree: 'BS Computer Science',
+                    startYear: '2010',
+                    endYear: '2014'
+                }],
+                customization: {
+                    primaryColor: '#2c3e50',
+                    accentColor: '#3498db',
+                    fontStyle: 'modern',
+                    layout: 'modern'
+                },
+                advanced: {
+                    animationType: document.getElementById('animationType').value,
+                    backgroundEffect: document.getElementById('backgroundEffect').value,
+                    textEffect: document.getElementById('textEffect').value,
+                    borderStyle: document.getElementById('borderStyle').value,
+                    glowIntensity: document.getElementById('glowIntensity').value,
+                    darkMode: document.getElementById('darkMode').checked,
+                    hoverEffects: document.getElementById('hoverEffects').checked,
+                    parallax: document.getElementById('parallax').checked
+                },
+                previewMode: 'html-advanced'
+            };
+            
+            // Generate preview
+            if (typeof generateCVPreview === 'function') {
+                generateCVPreview(testData);
+                
+                // Apply effects immediately after generation
+                setTimeout(() => {
+                    const cvContent = document.querySelector('.cv-content');
+                    if (cvContent) {
+                        applyEffectsToPreview(cvContent, testData.advanced);
+                    }
+                }, 100);
+            } else {
+                alert('CV generation function not loaded. Please refresh the page.');
+            }
+        }
+        
+        // Generate initial preview on load
+        window.addEventListener('load', () => {
+            console.log('🎨 Advanced Preview Test Page Loaded');
+            setTimeout(() => {
+                generateWithEffects();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
